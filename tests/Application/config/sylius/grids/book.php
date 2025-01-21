@@ -14,7 +14,7 @@ declare(strict_types=1);
 use App\Entity\Author;
 use App\Entity\Book;
 use App\Grid\Builder\NationalityFilter;
-use Sylius\Bundle\GridBundle\Builder\Field\CallbackField;
+use Sylius\Bundle\GridBundle\Builder\Field\CallableField;
 use Sylius\Bundle\GridBundle\Builder\Field\StringField;
 use Sylius\Bundle\GridBundle\Builder\Filter\EntityFilter;
 use Sylius\Bundle\GridBundle\Builder\Filter\SelectFilter;
@@ -49,7 +49,7 @@ return static function (GridConfig $grid) {
         )
         ->orderBy('title', 'asc')
         ->addField(
-            CallbackField::create('title', 'strtoupper')
+            CallableField::create('title', 'strtoupper')
                 ->setLabel('Title')
                 ->setSortable(true),
         )

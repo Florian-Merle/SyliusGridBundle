@@ -33,9 +33,9 @@ sylius_grid:
                 title: asc
             fields:
                 title:
-                    type: callback
+                    type: callable
                     options:
-                        callback: "callback:strtoupper"
+                        callable: "callable:strtoupper"
                     label: Title
                     sortable: ~
                 author:
@@ -62,9 +62,9 @@ sylius_grid:
                 name: asc
             fields:
                 id:
-                    type: callback
+                    type: callable
                     options:
-                        callback: "callback:App\\Helper\\GridHelper::addHashPrefix"
+                        callable: "callable:App\\Helper\\GridHelper::addHashPrefix"
                     label: ID
                     sortable: ~
                 name:

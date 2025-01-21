@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-use Sylius\Bundle\GridBundle\Builder\Field\CallbackField;
+use Sylius\Bundle\GridBundle\Builder\Field\CallableField;
 use Sylius\Bundle\GridBundle\Builder\Field\StringField;
 use Sylius\Bundle\GridBundle\Builder\Filter\StringFilter;
 use Sylius\Bundle\GridBundle\Builder\GridBuilder;
@@ -23,7 +23,7 @@ return static function (GridConfig $grid) {
             ->addFilter(StringFilter::create('name'))
             ->orderBy('name', 'asc')
             ->addField(
-                CallbackField::create('id', ['App\\Helper\\GridHelper', 'addHashPrefix'])
+                CallableField::create('id', ['App\\Helper\\GridHelper', 'addHashPrefix'])
                     ->setSortable(true),
             )
             ->addField(

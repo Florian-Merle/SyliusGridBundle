@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace Sylius\Bundle\GridBundle\Builder\Field;
 
-final class CallbackField
+final class CallableField
 {
-    public static function create(string $name, callable $callback, bool $htmlspecialchars = true): FieldInterface
+    public static function create(string $name, callable $callable, bool $htmlspecialchars = true): FieldInterface
     {
-        return Field::create($name, 'callback')
-            ->setOption('callback', $callback)
+        return Field::create($name, 'callable')
+            ->setOption('callable', $callable)
             ->setOption('htmlspecialchars', $htmlspecialchars)
         ;
     }

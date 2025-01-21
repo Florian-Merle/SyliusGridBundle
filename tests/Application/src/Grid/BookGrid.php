@@ -22,7 +22,7 @@ use Sylius\Bundle\GridBundle\Builder\Action\ShowAction;
 use Sylius\Bundle\GridBundle\Builder\Action\UpdateAction;
 use Sylius\Bundle\GridBundle\Builder\ActionGroup\ItemActionGroup;
 use Sylius\Bundle\GridBundle\Builder\ActionGroup\MainActionGroup;
-use Sylius\Bundle\GridBundle\Builder\Field\CallbackField;
+use Sylius\Bundle\GridBundle\Builder\Field\CallableField;
 use Sylius\Bundle\GridBundle\Builder\Field\StringField;
 use Sylius\Bundle\GridBundle\Builder\Filter\Filter;
 use Sylius\Bundle\GridBundle\Builder\GridBuilderInterface;
@@ -74,7 +74,7 @@ final class BookGrid extends AbstractGrid implements ResourceAwareGridInterface
             )
             ->orderBy('title', 'asc')
             ->addField(
-                CallbackField::create('title', 'strtoupper')
+                CallableField::create('title', 'strtoupper')
                     ->setLabel('Title')
                     ->setSortable(true),
             )

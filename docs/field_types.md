@@ -320,13 +320,13 @@ $field->setOptions([
 ]);
 ```
 
-Callback
+Callable
 --------
 
-The Callback column aims to offer almost as much flexibility as the Twig column, but without requiring the creation of a template.
-You simply need to specify a callback, which allows you to transform the 'data' variable on the fly.
+The Callable column aims to offer almost as much flexibility as the Twig column, but without requiring the creation of a template.
+You simply need to specify a callable, which allows you to transform the 'data' variable on the fly.
 
-When defining callbacks in YAML, only string representations of callables are supported.
+When defining callables in YAML, only string representations of callables are supported.
 When configuring grids using PHP (as opposed to service grid configuration), both string and array callables are supported. However, closures cannot be used due to restrictions in Symfony's configuration (values of type "Closure" are not permitted in service configuration files).
 By contrast, when configuring grids with service definitions, you can use both callables and closures.
 
@@ -342,14 +342,14 @@ sylius_grid:
         app_user:
             fields:
                 id:
-                    type: callback
+                    type: callable
                     options:
-                        callback: "callback:App\\Helper\\GridHelper::addHashPrefix"
+                        callable: "callable:App\\Helper\\GridHelper::addHashPrefix"
                     label: app.ui.id
                 name:
-                    type: callback
+                    type: callable
                     options:
-                        callback: "callback:strtoupper"
+                        callable: "callable:strtoupper"
                     label: app.ui.name
 ```
 
@@ -361,24 +361,24 @@ sylius_grid:
 <?php
 // config/packages/sylius_grid.php
 
-use Sylius\Bundle\GridBundle\Builder\Field\CallbackField;
+use Sylius\Bundle\GridBundle\Builder\Field\CallableField;
 use Sylius\Bundle\GridBundle\Builder\GridBuilder;
 use Sylius\Bundle\GridBundle\Config\GridConfig;
 
 return static function (GridConfig $grid): void {
     $grid->addGrid(GridBuilder::create('app_user', '%app.model.user.class%')
         ->addField(
-            CallbackField::create('id', 'App\\Helper\\GridHelper::addHashPrefix')
+            CallableField::create('id', 'App\\Helper\\GridHelper::addHashPrefix')
                 ->setLabel('app.ui.id')
         )
         // or
         ->addField(
-            CallbackField::create('id', ['App\\Helper\\GridHelper', 'addHashPrefix'])
+            CallableField::create('id', ['App\\Helper\\GridHelper', 'addHashPrefix'])
                 ->setLabel('app.ui.id')
         )
 
         ->addField(
-            CallbackField::create('name', 'strtoupper')
+            CallableField::create('name', 'strtoupper')
                 ->setLabel('app.ui.name')
         )
     )
@@ -396,7 +396,7 @@ declare(strict_types=1);
 namespace App\Grid;
 
 use App\Entity\User;
-use Sylius\Bundle\GridBundle\Builder\Field\CallbackField;
+use Sylius\Bundle\GridBundle\Builder\Field\CallableField;
 use Sylius\Bundle\GridBundle\Builder\GridBuilderInterface;
 use Sylius\Bundle\GridBundle\Grid\AbstractGrid;
 use Sylius\Bundle\GridBundle\Grid\ResourceAwareGridInterface;
@@ -412,15 +412,15 @@ final class UserGrid extends AbstractGrid implements ResourceAwareGridInterface
     {
         $gridBuilder
             ->addField(
-                CallbackField::create('id', GridHelper::addHashPrefix(...))
+                CallableField::create('id', GridHelper::addHashPrefix(...))
                     ->setLabel('app.ui.id')
             )
             ->addField(
-                CallbackField::create('name', 'strtoupper')
+                CallableField::create('name', 'strtoupper')
                     ->setLabel('app.ui.name')
             )
             ->addField(
-                CallbackField::create('roles' fn (array $roles): string => implode(', ', $roles))
+                CallableField::create('roles' fn (array $roles): string => implode(', ', $roles))
                     ->setLabel('app.ui.roles')
             )
         ;

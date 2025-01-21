@@ -45,19 +45,19 @@ final class OptionsParser implements OptionsParserInterface
             return $parameter;
         }
 
-        if (0 === strpos($parameter, 'callback:')) {
-            return $this->parseOptionCallback(substr($parameter, 9));
+        if (0 === strpos($parameter, 'callable:')) {
+            return $this->parseOptionCallable(substr($parameter, 9));
         }
 
         return $parameter;
     }
 
-    private function parseOptionCallback(string $callback): \Closure
+    private function parseOptionCallable(string $callable): \Closure
     {
-        if (!is_callable($callback)) {
-            throw new \RuntimeException(\sprintf('%s is not a callable.', $callback));
+        if (!is_callable($callable)) {
+            throw new \RuntimeException(\sprintf('%s is not a callable.', $callable));
         }
 
-        return $callback(...);
+        return $callable(...);
     }
 }

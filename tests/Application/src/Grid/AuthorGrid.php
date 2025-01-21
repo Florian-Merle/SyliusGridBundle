@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace App\Grid;
 
 use App\Helper\GridHelper;
-use Sylius\Bundle\GridBundle\Builder\Field\CallbackField;
+use Sylius\Bundle\GridBundle\Builder\Field\CallableField;
 use Sylius\Bundle\GridBundle\Builder\Field\StringField;
 use Sylius\Bundle\GridBundle\Builder\Filter\Filter;
 use Sylius\Bundle\GridBundle\Builder\GridBuilderInterface;
@@ -46,7 +46,7 @@ final class AuthorGrid extends AbstractGrid implements ResourceAwareGridInterfac
             ->addFilter(Filter::create('name', 'string'))
             ->orderBy('name', 'asc')
             ->addField(
-                CallbackField::create('id', GridHelper::addHashPrefix(...))
+                CallableField::create('id', GridHelper::addHashPrefix(...))
                     ->setSortable(true),
             )
             ->addField(

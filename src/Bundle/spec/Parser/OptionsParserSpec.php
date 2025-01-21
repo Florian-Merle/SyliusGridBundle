@@ -23,18 +23,18 @@ final class OptionsParserSpec extends ObjectBehavior
         $this->shouldImplement(OptionsParserInterface::class);
     }
 
-    function it_parses_options_with_callback(): void
+    function it_parses_options_with_callable(): void
     {
         $this
             ->parseOptions([
-                'type' => 'callback',
+                'type' => 'callable',
                 'option' => [
-                    'callback' => 'callback:App\\Helper\\GridHelper::addHashPrefix',
+                    'callable' => 'callable:App\\Helper\\GridHelper::addHashPrefix',
                 ],
                 'label' => 'app.ui.id',
             ])
             ->shouldBeAValidConfig([
-                'type' => 'callback',
+                'type' => 'callable',
                 'option' => [],
                 'label' => 'app.ui.id',
             ])
@@ -49,19 +49,19 @@ final class OptionsParserSpec extends ObjectBehavior
                     return false;
                 }
 
-                return is_callable($subject['option']['callback'] ?? null);
+                return is_callable($subject['option']['callable'] ?? null);
             },
         ];
     }
 
-    function it_fails_while_parsing_options_with_invalid_callback(): void
+    function it_fails_while_parsing_options_with_invalid_callable(): void
     {
         $this
             ->shouldThrow(\RuntimeException::class)
             ->during('parseOptions', [[
-                'type' => 'callback',
+                'type' => 'callable',
                 'option' => [
-                    'callback' => 'callback:foobar',
+                    'callable' => 'callable:foobar',
                 ],
                 'label' => 'app.ui.id',
             ]])
