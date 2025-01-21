@@ -33,7 +33,9 @@ sylius_grid:
                 title: asc
             fields:
                 title:
-                    type: string
+                    type: callback
+                    options:
+                        callback: "callback:strtoupper"
                     label: Title
                     sortable: ~
                 author:
@@ -60,10 +62,11 @@ sylius_grid:
                 name: asc
             fields:
                 id:
-                    type: string
+                    type: callback
+                    options:
+                        callback: "callback:App\\Helper\\GridHelper::addHashPrefix"
                     label: ID
                     sortable: ~
-                    enabled: false
                 name:
                     type: string
                     label: Name

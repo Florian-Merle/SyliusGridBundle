@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sylius\Bundle\GridBundle\Renderer;
 
 use Sylius\Bundle\GridBundle\Form\Registry\FormTypeRegistryInterface;
+use Sylius\Bundle\GridBundle\Parser\OptionsParserInterface;
 use Sylius\Component\Grid\Definition\Action;
 use Sylius\Component\Grid\Definition\Field;
 use Sylius\Component\Grid\Definition\Filter;
@@ -36,6 +37,8 @@ final class TwigGridRenderer implements GridRendererInterface
 
     private FormTypeRegistryInterface $formTypeRegistry;
 
+    private OptionsParserInterface $optionsParser;
+
     private string $defaultTemplate;
 
     private array $actionTemplates;
@@ -47,6 +50,7 @@ final class TwigGridRenderer implements GridRendererInterface
         ServiceRegistryInterface $fieldsRegistry,
         FormFactoryInterface $formFactory,
         FormTypeRegistryInterface $formTypeRegistry,
+        OptionsParserInterface $optionsParser,
         string $defaultTemplate,
         array $actionTemplates = [],
         array $filterTemplates = [],
@@ -55,6 +59,7 @@ final class TwigGridRenderer implements GridRendererInterface
         $this->fieldsRegistry = $fieldsRegistry;
         $this->formFactory = $formFactory;
         $this->formTypeRegistry = $formTypeRegistry;
+        $this->optionsParser = $optionsParser;
         $this->defaultTemplate = $defaultTemplate;
         $this->actionTemplates = $actionTemplates;
         $this->filterTemplates = $filterTemplates;
@@ -71,7 +76,8 @@ final class TwigGridRenderer implements GridRendererInterface
         $fieldType = $this->fieldsRegistry->get($field->getType());
         $resolver = new OptionsResolver();
         $fieldType->configureOptions($resolver);
-        $options = $resolver->resolve($field->getOptions());
+
+        $options = $resolver->resolve($this->optionsParser->parseOptions($field->getOptions()));
 
         return $fieldType->render($field, $data, $options);
     }

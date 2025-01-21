@@ -16,6 +16,7 @@ namespace spec\Sylius\Bundle\GridBundle\Renderer;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Sylius\Bundle\GridBundle\Form\Registry\FormTypeRegistryInterface;
+use Sylius\Bundle\GridBundle\Parser\OptionsParserInterface;
 use Sylius\Component\Grid\Definition\Action;
 use Sylius\Component\Grid\Definition\Field;
 use Sylius\Component\Grid\FieldTypes\FieldTypeInterface;
@@ -35,6 +36,7 @@ final class TwigGridRendererSpec extends ObjectBehavior
         ServiceRegistryInterface $fieldsRegistry,
         FormFactoryInterface $formFactory,
         FormTypeRegistryInterface $formTypeRegistry,
+        OptionsParserInterface $optionsParser,
     ): void {
         $actionTemplates = [
             'link' => '@SyliusGrid/Action/_link.html.twig',
@@ -49,6 +51,7 @@ final class TwigGridRendererSpec extends ObjectBehavior
             $fieldsRegistry,
             $formFactory,
             $formTypeRegistry,
+            $optionsParser,
             '"@SyliusGrid/default"',
             $actionTemplates,
             $filterTemplates,
@@ -94,6 +97,7 @@ final class TwigGridRendererSpec extends ObjectBehavior
         Field $field,
         ServiceRegistryInterface $fieldsRegistry,
         FieldTypeInterface $fieldType,
+        OptionsParserInterface $optionsParser,
     ): void {
         $field->getType()->willReturn('string');
         $fieldsRegistry->get('string')->willReturn($fieldType);
@@ -106,6 +110,7 @@ final class TwigGridRendererSpec extends ObjectBehavior
         $field->getOptions()->willReturn([
             'foo' => 'bar',
         ]);
+        $optionsParser->parseOptions(['foo' => 'bar'])->willReturn(['foo' => 'bar']);
         $fieldType->render($field, 'Value', ['foo' => 'bar'])->willReturn('<strong>Value</strong>');
 
         $this->renderField($gridView, $field, 'Value')->shouldReturn('<strong>Value</strong>');

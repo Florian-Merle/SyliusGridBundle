@@ -326,8 +326,34 @@ Callback
 The Callback column aims to offer almost as much flexibility as the Twig column, but without requiring the creation of a template.
 You simply need to specify a callback, which allows you to transform the 'data' variable on the fly.
 
-By default it uses the name of the field, but you can specify the path
-alternatively. For example:
+When defining callbacks in YAML, only string representations of callables are supported.
+When configuring grids using PHP (as opposed to service grid configuration), both string and array callables are supported. However, closures cannot be used due to restrictions in Symfony's configuration (values of type "Closure" are not permitted in service configuration files).
+By contrast, when configuring grids with service definitions, you can use both callables and closures.
+
+Here are some examples of what you can do:
+
+<details open><summary>Yaml</summary>
+
+```yaml
+# config/packages/sylius_grid.yaml
+
+sylius_grid:
+    grids:
+        app_user:
+            fields:
+                id:
+                    type: callback
+                    options:
+                        callback: "callback:App\\Helper\\GridHelper::addHashPrefix"
+                    label: app.ui.id
+                name:
+                    type: callback
+                    options:
+                        callback: "callback:strtoupper"
+                    label: app.ui.name
+```
+
+</details>
 
 <details open><summary>PHP</summary>
 
@@ -342,14 +368,18 @@ use Sylius\Bundle\GridBundle\Config\GridConfig;
 return static function (GridConfig $grid): void {
     $grid->addGrid(GridBuilder::create('app_user', '%app.model.user.class%')
         ->addField(
-            CallbackField::create('roles' fn (array $roles): string => implode(', ', $roles))
-                ->setLabel('app.ui.roles') // # each filed type can have a label, we suggest using translation keys instead of messages
-                ->setPath('roles')
+            CallbackField::create('id', 'App\\Helper\\GridHelper::addHashPrefix')
+                ->setLabel('app.ui.id')
         )
+        // or
         ->addField(
-            CallbackField::create('status' fn (array $status): string => "<strong>$status</strong>", false) // the third argument allows to disable htmlspecialchars if set to false
-                ->setLabel('app.ui.status') // # each filed type can have a label, we suggest using translation keys instead of messages
-                ->setPath('status')
+            CallbackField::create('id', ['App\\Helper\\GridHelper', 'addHashPrefix'])
+                ->setLabel('app.ui.id')
+        )
+
+        ->addField(
+            CallbackField::create('name', 'strtoupper')
+                ->setLabel('app.ui.name')
         )
     )
 };
@@ -382,14 +412,16 @@ final class UserGrid extends AbstractGrid implements ResourceAwareGridInterface
     {
         $gridBuilder
             ->addField(
-                CallbackField::create('roles' fn (array $roles): string => implode(', ', $roles))
-                    ->setLabel('app.ui.roles') // # each filed type can have a label, we suggest using translation keys instead of messages
-                    ->setPath('roles')
+                CallbackField::create('id', GridHelper::addHashPrefix(...))
+                    ->setLabel('app.ui.id')
             )
             ->addField(
-                CallbackField::create('status' fn (array $status): string => "<strong>$status</strong>", false) // the third argument allows to disable htmlspecialchars if set to false
-                    ->setLabel('app.ui.status') // # each filed type can have a label, we suggest using translation keys instead of messages
-                    ->setPath('status')
+                CallbackField::create('name', 'strtoupper')
+                    ->setLabel('app.ui.name')
+            )
+            ->addField(
+                CallbackField::create('roles' fn (array $roles): string => implode(', ', $roles))
+                    ->setLabel('app.ui.roles')
             )
         ;
     }
@@ -402,6 +434,3 @@ final class UserGrid extends AbstractGrid implements ResourceAwareGridInterface
 ```
 
 </details>
-
-This configuration will display each role of a customer separated with a comma.
-
