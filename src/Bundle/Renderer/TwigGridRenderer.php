@@ -37,32 +37,42 @@ final class TwigGridRenderer implements GridRendererInterface
 
     private FormTypeRegistryInterface $formTypeRegistry;
 
-    private OptionsParserInterface $optionsParser;
-
     private string $defaultTemplate;
 
     private array $actionTemplates;
 
     private array $filterTemplates;
 
+    private ?OptionsParserInterface $optionsParser;
+
     public function __construct(
         Environment $twig,
         ServiceRegistryInterface $fieldsRegistry,
         FormFactoryInterface $formFactory,
         FormTypeRegistryInterface $formTypeRegistry,
-        OptionsParserInterface $optionsParser,
         string $defaultTemplate,
         array $actionTemplates = [],
         array $filterTemplates = [],
+        ?OptionsParserInterface $optionsParser = null,
     ) {
         $this->twig = $twig;
         $this->fieldsRegistry = $fieldsRegistry;
         $this->formFactory = $formFactory;
         $this->formTypeRegistry = $formTypeRegistry;
-        $this->optionsParser = $optionsParser;
         $this->defaultTemplate = $defaultTemplate;
         $this->actionTemplates = $actionTemplates;
         $this->filterTemplates = $filterTemplates;
+        $this->optionsParser = $optionsParser;
+
+        if (null === $optionsParser) {
+            trigger_deprecation(
+                'sylius/grid-bundle',
+                '1.14',
+                'Not passing an instance of "%s" as the eighth constructor argument of "%s" is deprecated.',
+                OptionsParserInterface::class,
+                self::class,
+            );
+        }
     }
 
     public function render(GridViewInterface $gridView, ?string $template = null)
@@ -77,7 +87,11 @@ final class TwigGridRenderer implements GridRendererInterface
         $resolver = new OptionsResolver();
         $fieldType->configureOptions($resolver);
 
-        $options = $resolver->resolve($this->optionsParser->parseOptions($field->getOptions()));
+        $options = $field->getOptions();
+        if (null !== $this->optionsParser) {
+            $options = $this->optionsParser->parseOptions($options);
+        }
+        $options = $resolver->resolve($options);
 
         return $fieldType->render($field, $data, $options);
     }
