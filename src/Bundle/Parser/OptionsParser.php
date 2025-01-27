@@ -18,12 +18,7 @@ final class OptionsParser implements OptionsParserInterface
     public function parseOptions(array $parameters): array
     {
         return array_map(
-            /**
-             * @param mixed $parameter
-             *
-             * @return mixed
-             */
-            function ($parameter) {
+            function (mixed $parameter): mixed {
                 if (is_array($parameter)) {
                     return $this->parseOptions($parameter);
                 }
@@ -34,12 +29,7 @@ final class OptionsParser implements OptionsParserInterface
         );
     }
 
-    /**
-     * @param mixed $parameter
-     *
-     * @return mixed
-     */
-    private function parseOption($parameter)
+    private function parseOption(mixed $parameter): mixed
     {
         if (!is_string($parameter)) {
             return $parameter;
